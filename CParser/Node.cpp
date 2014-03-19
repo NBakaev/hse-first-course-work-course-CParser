@@ -27,3 +27,19 @@ auto CNode::addChildren(CNode* childrenNode)->void{
 	this->childrens.push_back(childrenNode);
 
 }
+
+auto CNode::getClass()->string{
+	return this->classHTML;
+
+}
+
+auto CNode::getId()->string{
+	return this->idHTML;
+
+}
+
+auto CNode::getAttributes()->vector<map<string, string>>{
+
+	return this->attributes;
+
+}

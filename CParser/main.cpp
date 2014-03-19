@@ -11,12 +11,8 @@ auto main() -> int
 {
 
 	//auto parser = *new CParser("<html> start html <head> inside head </head> <body> <div insideDIV1 /> <div SecondInner2 /><div> inside DIV3 </div>BodyText</body>before close html</html> <div ll> third div4</div> ");
-
-	//auto parser = *new CParser("<html> start html <head> inside head </head> <body> <div insideDIV1 /> <div SecondInner2 /><div> inside DIV3 </div>BodyText</body>before close html</html> <div ll> third div4</div> ");
 	auto parser = *new CParser("http://localhost/index.html");
-	//auto parser = *new CParser("http://habrahabr.ru");
-
-
+	
 	cout << "\n";
 	/*
 	cout << parser.getBody();
@@ -41,32 +37,42 @@ auto main() -> int
 	}
 	parser.makeDOM();*/
 
+	//cout << "html inline" << parser.html;
 
-	//auto a = CParser
-	//auto parser = *new CParser("http://habrahabr.ru");
-
-
-	cout << "\n\n\n";
-	cout << "All tags\n";
+	cout << "\n";
+	cout << "+++++++++ Printing DOM - All tags +++++++++\n";
 
 	for (auto a : parser.allTags){
-		//cout << a << "\n";
 		
 		for (int i = 0; i < a->deep; i++) cout << " ";
-
 		cout << a->tagName << "<" << a->deep << ">";
-
 			cout << "\n";
-
 	}
+	cout << "+++++++++ END +++++++++\n";
+
+	cout << "\n\n";
 
 
-	//////////
+	string tagToFind = "div";
+
+	cout << "+++++++++ Finding in DOM by tag: \"" << tagToFind <<"\" +++++++++\n";
 	
-	cout << "\n\n\n\n finding....\n";
-	
-	for (auto a : parser.getByTag("li")){
-		cout << a->tagName << "\n";
+	for (auto a : parser.getByTag(tagToFind)){
+		cout << "Tag name: " << a->tagName;
+		cout << "\n  " << "Attributes: ";
+
+		for (auto m : a->getAttributes()){
+			
+			
+
+			for (auto ii = m.begin(); ii != m.end(); ii++)cout <<"\n    " << ii->first << ":" << ii->second;
+
+			//cout << "Name: " << b[0] << "Value: " << b[1];
+
+		//	cout << " | ";
+		}
+
+		cout << "\n" << "----------------------" << "\n";
 
 	}
 
@@ -78,7 +84,6 @@ auto main() -> int
 	
 
 	//cout << "\n\n\nhtml" << parser.html;
-
 
 	return 0;
 

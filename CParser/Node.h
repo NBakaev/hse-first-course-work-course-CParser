@@ -1,7 +1,7 @@
 #pragma once
 
 #include <vector>
-
+#include <map>
 
 
 using namespace std;
@@ -22,9 +22,9 @@ public:
 	auto setTagAttributes(vector<string> attributes) -> void;
 	auto addParent(CNode* p) ->void;
 	auto addChildren(CNode* p) ->void;
-/*
-	auto deep()
-*/
+
+	auto getClass()->string;
+	auto getId()->string;
 
 	int deep=0;
 
@@ -34,8 +34,14 @@ public:
 
 	string tagName;
 
+	auto getAttributes()->vector<map<string, string>>;
+	vector<map<string, string>> attributes;
 
 private:
+	
+	
+	string classHTML;
+	string idHTML;
 
 	CNode* parent;
 	vector<CNode*> childrens;

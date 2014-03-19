@@ -6,6 +6,10 @@
 #include <winsock2.h>
 #include <windows.h>
 #include <iostream>
+#include <map>
+#include <string>
+#include <algorithm>
+
 #pragma comment(lib,"ws2_32.lib")
 
 
@@ -76,6 +80,14 @@ auto CParser::makeDOM() -> void{
 
 	int currentDeep=0;
 
+
+	vector<map<string, string>> NodeAttributes;
+	map<string, string> s;
+
+
+	string tempStringForAttributeName, tempStringForAttributeValue;
+	bool onAttributeName=false, onAttributeValue=false;
+
 	CNode* prevElement=nullptr;
 	CNode* parentElement = nullptr;
 	CNode* rootNode = nullptr;
@@ -89,32 +101,49 @@ auto CParser::makeDOM() -> void{
 		 currentChar = html[i];
 
 		 // If we are in tag and this thar is last
-		if ( (onTagName || onTagLocation) && (currentChar=='>')){
+		if ( onTagLocation && (currentChar=='>')){
 			onTagName = false;
 			onTagLocation = false;
 
+			//if (rootNode != nullptr)
+			currentDeep++;
 
-			if (prevChar == '/') currentDeep--; //  <.... "/">
-
-			if (currentTag[0] != '/')currentDeep++;
-
-			
-			CNode* node = new CNode();
-			node->setTagName(currentTag);
-			node->setDeep(currentDeep);
+			//TODO It can be <tagName .. / > ????? but not often
+			if (prevChar == '/') currentDeep-=1; //  <tagName "/">
 
 
 			if (currentTag[0] == '/'){ // </...>
-				currentDeep--;
+				currentDeep-=1;
 			}
 			else {  }
 
 
-			//currentDeep+=1;
+			CNode* node = new CNode();
+			node->setTagName(currentTag);
+			node->setDeep(currentDeep);
+			node->attributes = NodeAttributes;
+
+
+			//////////////// one more time #1    /////////////////////////
+			if (prevChar == '/') currentDeep -= 1; //  <tagName "/">
+
+
+			if (currentTag[0] == '/'){ // </...>
+				currentDeep -= 1;
+			}
+			else {}
+			//////////////// one more time #2    /////////////////////////
+
+
+
+
+
 
 			if (prevElement == nullptr){
 				// If it's root element
-				rootNode = node;
+				if (rootNode == nullptr) rootNode = node;
+
+				
 				prevElement = node;
 			}
 			else{
@@ -127,19 +156,12 @@ auto CParser::makeDOM() -> void{
 				}
 				else{
 					// If it's a children 
-
-
 				}
-
 			}
 
-			
 			this->allTags.push_back(node);
-		
 			currentTag.clear();
-
 		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////
@@ -152,18 +174,70 @@ auto CParser::makeDOM() -> void{
 				currentTag += currentChar;
 			}
 		}
-	
 
+		
 		if (currentChar == '<'){
 			onTagName = true;
 			onTagLocation = true;
 
-			//currentDeep++;
+			NodeAttributes.clear();
+		}
+
+		/// Some HTML attribute ????
+
+
+
+		if (onTagLocation && !onTagName){
+
+			if (onAttributeValue && (currentChar == '"' ||  currentChar=='\'')){
+				s[tempStringForAttributeName] = tempStringForAttributeValue;
+				NodeAttributes.push_back(s);
+
+				tempStringForAttributeName.clear();
+				tempStringForAttributeValue.clear();
+
+				s.clear();
+
+				onAttributeName = false;
+				onAttributeValue = false;
+			}
+
+
+			if (currentChar != ' ' && (currentChar != '"' && currentChar != '\'')){
+				
+
+				if (onAttributeValue && !onAttributeName){ tempStringForAttributeValue += currentChar; }
+
+				if (onAttributeName && currentChar == '=') {
+					i++;
+					//break;
+					onAttributeValue = true;
+					onAttributeName = false;
+
+				}
+				else{
+
+
+					if (onAttributeValue == false){
+						onAttributeName = true;
+						tempStringForAttributeName += currentChar;
+					}
+					}
+
+			}
+		
 
 		}
 
 
+
+
 	}
+
+
+	/*if (rootNode != nullptr)
+	rootNode->deep = rootNode->deep--;*/
+
 
 }
 
@@ -237,6 +311,7 @@ CParser::CParser(string url){
 	}
 
 	url.erase(url.find_last_not_of(" \n\r\t") + 1); // trim
+	url.erase(std::remove(url.begin(), url.end(), '\t'), url.end());
 
 	this->html = url;
 	this->makeDOM();
