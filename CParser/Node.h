@@ -15,39 +15,28 @@ public:
 
 	auto getChildrens(CNode*)->vector<CNode*>;
 	auto getSiblings(CNode*) ->vector<CNode*>;
-	auto getContent(CNode*)->string;
-	
 	
 	auto setTagName(string tag)->void;
 	auto setTagAttributes(vector<string> attributes) -> void;
 	auto addParent(CNode* p) ->void;
 	auto addChildren(CNode* p) ->void;
-
-	auto getClass()->string;
-	auto getId()->string;
-
-	int deep=0;
-
+	auto getAttributes()->vector<map<string, string>>;
 	auto setDeep(int d) -> void;
 	
-	//CNode(string tagName,);
 
+	int deep=0;
 	string tagName;
-
-	auto getAttributes()->vector<map<string, string>>;
 	vector<map<string, string>> attributes;
+	string innerText;
 
 private:
 	
 	
 	string classHTML;
 	string idHTML;
-
 	CNode* parent;
 	vector<CNode*> childrens;
-
 	vector<CNode*> siblings;
-
 	//TODO: Attributes
 
 

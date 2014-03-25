@@ -9,36 +9,25 @@ using namespace std;
 class CParser
 {
 public:
-	//CParser();
 	~CParser();
-
 	// Url (http://site.com) or html inline //
 	CParser(string url);
 
-
-
-
-
+	auto getSublings(CNode* node)->vector<CNode*>;
 	auto makeDOM()->void;
-	auto getBody()->string;
 	auto getByTag(string tag)->vector<CNode*>;
-	
 
-	
 
-	string html;
+
+	bool hasError = false;
+	
 	vector<CNode*> allTags;
-
 
 private:
 	CNode* rootNode = nullptr;
-
+	string html;
 
 	CParser();
-
-	//eventually
-	//string html;
-
 	
 };
 

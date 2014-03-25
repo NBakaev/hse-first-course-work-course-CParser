@@ -28,15 +28,6 @@ auto CNode::addChildren(CNode* childrenNode)->void{
 
 }
 
-auto CNode::getClass()->string{
-	return this->classHTML;
-
-}
-
-auto CNode::getId()->string{
-	return this->idHTML;
-
-}
 
 auto CNode::getAttributes()->vector<map<string, string>>{
 
