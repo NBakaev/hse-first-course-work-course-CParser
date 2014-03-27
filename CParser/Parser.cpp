@@ -1,6 +1,5 @@
 ﻿#include "stdafx.h"
 #include "Parser.h"
-#include "SimpleList.h"
 #include <vector>
 #include <iostream>
 #include <winsock2.h>
@@ -9,6 +8,7 @@
 #include <map>
 #include <string>
 #include <algorithm>
+#include <set>
 
 #pragma comment(lib,"ws2_32.lib")
 
@@ -32,41 +32,12 @@ auto CParser::getByTag(string tag) -> vector<CNode*>{
 		}
 	}
 
-	//////////////////////
-	/// Multiple Find
-	//for (int i = 0; i < tagToFind.size(); i++){
-	//	
-	//	this->getByTag(tagToFind[0]);
-	//	tagToFind.erase(tagToFind.begin() + 0);
-	//	
-	//	// надо взять первый элемент
-	//}
-	//////////////////////
-
 	for (auto r : this->allTags){
 		if (r->tagName == tag) result.push_back(r);
 	}
 
 	return result;
 }
-
-
-////<a href= cls>
-//auto CParser::getSublings(CNode* node) -> vector<CNode*>{
-//
-//	vector<CNode*> result;
-//
-//	for (auto r : this->allTags){
-//		if (r->deep == node->deep) result.push_back(r);
-//
-//	}
-//
-//	return result;
-//
-//}
-
-
-
 
 
 auto CParser::makeDOM() -> void{
@@ -122,7 +93,6 @@ auto CParser::makeDOM() -> void{
 
 			currentDeep++;
 
-			//TODO It can be <tagName .. / > ????? but not often
 			if (prevChar == '/') currentDeep -= 1; //  <tagName "/">
 
 			if (currentTag[0] == '/'){ // </...>
@@ -140,7 +110,11 @@ auto CParser::makeDOM() -> void{
 				currentDeep--;
 			}
 
-			if (prevChar == '/') currentDeep -= 1; //  <tagName "/">
+			if (prevChar == '/'){
+				currentDeep -= 1; //  <tagName "/">
+				node->isSelfClosing = true;
+			}
+			
 			if (currentTag[0] == '/'){ // </...>
 				currentDeep -= 1;
 			}
@@ -154,15 +128,6 @@ auto CParser::makeDOM() -> void{
 			else{
 				prevElement = node;
 				// Not root element
-				if (prevElement->deep == node->deep){
-					// Here if current element is subling with some other
-					//parentElement->addChildren(node);
-					//node->deep = parentElement->deep;
-
-				}
-				else{
-					// If it's a children 
-				}
 			}
 			this->allTags.push_back(node);
 			currentTag.clear();
@@ -222,14 +187,13 @@ auto CParser::makeDOM() -> void{
 	// Unclosed tag or one more closed tag
 	if (currentDeep != 0) this->hasError = true;
 
-	//TODO: Sublings, childrens, parents for every node
 }
 
 ///////////////////////////////////////////////////////////////// 
 
 
 CParser::CParser(string url){
-	//TODO: refactoring
+	// TODO: refactoring, not funny
 	if (url[0] == 'h' && url[1] == 't' && url[2] == 't' && url[3] == 'p'){
 
 		/// Get DATA from url
@@ -288,6 +252,7 @@ CParser::CParser(string url){
 	this->makeDOM();
 
 }
+
 
 CParser::CParser()
 {

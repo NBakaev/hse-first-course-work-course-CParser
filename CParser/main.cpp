@@ -2,7 +2,6 @@
 #include <string>
 #include <iostream>
 #include "Parser.h"
-#include "SimpleList.h"
 
 using namespace std;
 
@@ -21,8 +20,9 @@ auto main() -> int
 	}
 	cout << "+++++++++ END +++++++++\n";
 	cout << "\n\n";
-//////////////////////////////////////////////////////////////////////////////////////////////////////////
 	cout << "\n";
+
+
 	cout << "+++++++++ Printing DOM - All tags with inner text +++++++++\n";
 
 	for (auto a : parser.allTags){
@@ -32,8 +32,6 @@ auto main() -> int
 	}
 	cout << "+++++++++ END +++++++++\n";
 	cout << "\n\n";
-//////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 
 	string tagToFind = "div";
 
@@ -48,52 +46,18 @@ auto main() -> int
 		}
 		cout << "\n" << "----------------------" << "\n";
 	}
+	
+	string selectTitleInsideText = "title";
 
-	/*string tagToFind = "div div";
-
-	cout << "+++++++++ Finding in DOM by complex tag: \"" << tagToFind << "\" +++++++++\n";
-
-	for (auto a : parser.getByTag(tagToFind)){
-		cout << "Tag name: " << a->tagName;
-		cout << "\n  " << "Attributes: ";
-
-		for (auto m : a->getAttributes()){
-			for (auto ii = m.begin(); ii != m.end(); ii++)cout << "\n    " << ii->first << "=" << ii->second;
-
-
-		}
-
-		cout << "\n" << "----------------------" << "\n";
-
-	}*/
-
-
-
-/*
-	string sublingTag = parser.getByTag("div").pop_back;
-
-	cout << "+++++++++ Finding sublings in DOM by tag: \"" << sublingTag << "\" +++++++++\n";
-
-	for (auto a : parser.getSublings(tagToFind)){
-		cout << "Tag name: " << a->tagName;
-		cout << "\n  " << "Attributes: ";
-
-		for (auto m : a->getAttributes()){
-			for (auto ii = m.begin(); ii != m.end(); ii++)cout << "\n    " << ii->first << "=" << ii->second;
-
-
-		}
-
-		cout << "\n" << "----------------------" << "\n";
-
+	cout << "\n\n";
+	cout << "+++++++++ Finding and printing title of HTML page +++++++++\n";
+	for (auto a : parser.getByTag(selectTitleInsideText)){
+	cout << "Title of HTML page is: " << a->innerText;
 	}
-*/
 
+	cout << "\n" << "----------------------" << "\n";
 
-	if (parser.hasError) cout << "Has an error!!";
-
-
-
+	
 
 	cout << "\n";
 	
